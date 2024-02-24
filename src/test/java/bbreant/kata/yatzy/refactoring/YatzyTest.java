@@ -1,3 +1,5 @@
+package bbreant.kata.yatzy.refactoring;
+
 import bbreant.kata.yatzy.refactoring.Yatzy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
