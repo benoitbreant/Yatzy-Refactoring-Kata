@@ -1,5 +1,9 @@
 package bbreant.kata.yatzy.refactoring;
 
+import bbreant.kata.yatzy.refactoring.category.Category;
+import bbreant.kata.yatzy.refactoring.roll.Roll;
+import bbreant.kata.yatzy.refactoring.score.ScoreStrategyFactory;
+
 import java.security.InvalidParameterException;
 
 public class Yatzy {
@@ -8,7 +12,7 @@ public class Yatzy {
         if (roll == null) {
             throw new InvalidParameterException("Roll is null");
         }
-        return category.getScoreStrategy().score(roll);
+        return ScoreStrategyFactory.getScoreStrategy(category).score(roll);
     }
 
 }

@@ -1,6 +1,6 @@
 package bbreant.kata.yatzy.refactoring.score;
 
-import bbreant.kata.yatzy.refactoring.Roll;
+import bbreant.kata.yatzy.refactoring.roll.Roll;
 
 import java.util.Map;
 

@@ -1,5 +1,6 @@
 package bbreant.kata.yatzy.refactoring;
 
+import bbreant.kata.yatzy.refactoring.roll.Roll;
 import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.TypedArgumentConverter;
 

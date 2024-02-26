@@ -1,5 +1,8 @@
 package bbreant.kata.yatzy.refactoring;
 
+import bbreant.kata.yatzy.refactoring.category.UnexpectedCategory;
+import bbreant.kata.yatzy.refactoring.category.YatzyCategory;
+import bbreant.kata.yatzy.refactoring.roll.Roll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,18 +26,32 @@ class YatzyTest {
     void when_roll_is_null_then_throws_illegalArgumentException() {
         IllegalArgumentException thrown = assertThrows(
                 IllegalArgumentException.class,
-                () -> yatzy.scoreOfTheRollInACategory(null, Category.CHANCE),
+                () -> yatzy.scoreOfTheRollInACategory(null, YatzyCategory.CHANCE),
                 "Expected null roll to throw IllegalArgumentException, but it didn't"
         );
 
         assertTrue(thrown.getMessage().contains("Roll is null"));
     }
 
+    @ParameterizedTest(name = "Roll '{'{0}'}' with unexpected category throw IllegalStateException")
+    @CsvSource("3|3|4|5|1")
+    @DisplayName("Category is unexpected, then throws IllegalStateException")
+    void when_category_is_unexpected_then_throws_illegalStateException(@ConvertWith(StringToRollArgumentConverter.class) Roll roll) {
+
+        IllegalStateException thrown = assertThrows(
+                IllegalStateException.class,
+                () -> yatzy.scoreOfTheRollInACategory(roll, UnexpectedCategory.UNKNOWN),
+                "Expected unexpected category to throw IllegalArgumentException, but it didn't"
+        );
+
+        assertTrue(thrown.getMessage().contains("Unexpected category"));
+    }
+
     @ParameterizedTest(name = "Roll '{'{0}'}' scores {1}")
     @CsvSource("3|3|4|5|1,16")
     @DisplayName("Player choose \"chance\" category, then scores sum of all dice")
     void when_chance_then_scores_sum_of_all_dice(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.CHANCE);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.CHANCE);
 
         assertEquals(expectedScore, actual);
     }
@@ -46,7 +63,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"yatzy\" category and all dice have same number, then scores 50")
     void when_yatzy_with_all_dice_having_same_number_then_scores_50(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.YATZY);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.YATZY);
 
         assertEquals(expectedScore, actual);
     }
@@ -55,7 +72,7 @@ class YatzyTest {
     @CsvSource("6|6|6|6|3,0")
     @DisplayName("Player choose \"yatzy\" category and all dice have not same number, then scores 0")
     void when_yatzy_with_all_dice_having_not_same_number_then_scores_0(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.YATZY);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.YATZY);
 
         assertEquals(expectedScore, actual);
     }
@@ -68,7 +85,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"ones\" category, then scores sum of ones")
     void when_onces_then_scores_sum_of_ones(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.ONES);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.ONES);
 
         assertEquals(expectedScore, actual);
     }
@@ -81,7 +98,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"twos\" category, then scores sum of twos")
     void when_twos_then_scores_sum_of_twos(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.TWOS);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.TWOS);
 
         assertEquals(expectedScore, actual);
     }
@@ -94,7 +111,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"threes\" category, then scores sum of threes")
     void when_threes_then_scores_sum_of_threes(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.THREES);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.THREES);
 
         assertEquals(expectedScore, actual);
     }
@@ -107,7 +124,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"fours\" category, then scores sum of fours")
     void when_fours_then_scores_sum_of_fours(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.FOURS);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.FOURS);
 
         assertEquals(expectedScore, actual);
     }
@@ -120,7 +137,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"fives\" category, then scores sum of fives")
     void when_fives_then_scores_sum_of_fives(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.FIVES);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.FIVES);
 
         assertEquals(expectedScore, actual);
     }
@@ -133,7 +150,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"sixes\" category, then scores sum of sixes")
     void when_sixes_then_scores_sum_of_sixes(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.SIXES);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.SIXES);
 
         assertEquals(expectedScore, actual);
     }
@@ -144,7 +161,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"pair\" category but no pair in roll, then scores 0")
     void when_pair_with_less_than_one_pair_then_scores_0(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.PAIR);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.PAIR);
 
         assertEquals(expectedScore, actual);
     }
@@ -156,7 +173,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"pair\" category and one pair in roll, then scores the sum of two matching dice")
     void when_pair_with_only_one_pair_then_scores_sum_of_two_matching_dice(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.PAIR);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.PAIR);
 
         assertEquals(expectedScore, actual);
     }
@@ -169,7 +186,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"pair\" category and multiple pair in roll, then scores the sum of two highest matching dice")
     void when_pair_with_more_than_one_pair_then_scores_sum_of_two_highest_matching_dice(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.PAIR);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.PAIR);
 
         assertEquals(expectedScore, actual);
     }
@@ -182,7 +199,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"two pairs\" category and less than two pairs in roll, then scores 0")
     void when_twoPair_with_less_than_two_pair_then_scores_0(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.TWO_PAIRS);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.TWO_PAIRS);
 
         assertEquals(expectedScore, actual);
     }
@@ -194,7 +211,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"two pairs\" category and two pairs in roll, then scores the sum of these dice")
     void when_twoPair_with_two_pair_then_scores_sum_of_these_dice(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.TWO_PAIRS);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.TWO_PAIRS);
 
         assertEquals(expectedScore, actual);
     }
@@ -206,7 +223,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"three of a kind\" category and at least three dice have the same value, then scores the sum of these three dice")
     void when_threeOfAKind_then_scores_sum_of_these_dice(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.THREE_OF_A_KIND);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.THREE_OF_A_KIND);
 
         assertEquals(expectedScore, actual);
     }
@@ -217,7 +234,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"three of a kind\" category and less than three dice have the same value, then scores 0")
     void when_threeOfAKind_and_less_than_three_dice_with_same_value_then_scores_0(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.THREE_OF_A_KIND);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.THREE_OF_A_KIND);
 
         assertEquals(expectedScore, actual);
     }
@@ -229,7 +246,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"four of a kind\" category and at least four dice have the same value, then scores the sum of these four dice")
     void when_fourOfAKind_then_scores_sum_of_these_dice(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.FOUR_OF_A_KIND);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.FOUR_OF_A_KIND);
 
         assertEquals(expectedScore, actual);
     }
@@ -240,7 +257,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"four of a kind\" category and less than four dice have the same value, then scores 0")
     void when_fourOfAKind_and_less_than_four_dice_with_same_value_then_scores_0(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.FOUR_OF_A_KIND);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.FOUR_OF_A_KIND);
 
         assertEquals(expectedScore, actual);
     }
@@ -251,7 +268,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"small straight\" category and dice read 1,2,3,4,5, then scores 15")
     void when_smallStraight_with_dice_read_1_2_3_4_5_then_scores_15(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.SMALL_STRAIGHT);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.SMALL_STRAIGHT);
 
         assertEquals(expectedScore, actual);
     }
@@ -263,7 +280,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"small straight\" category and dice read not 1,2,3,4,5, then scores 0")
     void when_smallStraight_with_dice_read_not_1_2_3_4_5_then_scores_0(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.SMALL_STRAIGHT);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.SMALL_STRAIGHT);
 
         assertEquals(expectedScore, actual);
     }
@@ -274,7 +291,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"large straight\" category and dice read 2,3,4,5,6, then scores 20")
     void when_largeStraight_with_dice_read_2_3_4_5_6_then_scores_20(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.LARGE_STRAIGHT);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.LARGE_STRAIGHT);
 
         assertEquals(expectedScore, actual);
     }
@@ -286,7 +303,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"large straight\" category and dice read not 2,3,4,5,6, then scores 0")
     void when_largeStraight_wit_dice_read_not_2_3_4_5_6_then_scores_0(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.LARGE_STRAIGHT);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.LARGE_STRAIGHT);
 
         assertEquals(expectedScore, actual);
     }
@@ -298,7 +315,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"full house\" category and dice are two of a kind and three of a kind, then scores sum of all dice")
     void when_fullHouse_with_two_dice_of_a_kind_and_three_dice_of_a_kind_then_scores_sum_of_all_dice(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.FULL_HOUSE);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.FULL_HOUSE);
 
         assertEquals(expectedScore, actual);
     }
@@ -310,7 +327,7 @@ class YatzyTest {
     })
     @DisplayName("Player choose \"full house\" category and dice are not two of a kind and three of a kind, then scores 0")
     void when_fullHouse_without_two_dice_of_a_kind_and_three_dice_of_a_kind_then_scores_0(@ConvertWith(StringToRollArgumentConverter.class) Roll roll, int expectedScore) {
-        int actual = yatzy.scoreOfTheRollInACategory(roll, Category.FULL_HOUSE);
+        int actual = yatzy.scoreOfTheRollInACategory(roll, YatzyCategory.FULL_HOUSE);
 
         assertEquals(expectedScore, actual);
     }
