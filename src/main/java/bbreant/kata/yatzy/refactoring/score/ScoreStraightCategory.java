@@ -6,7 +6,7 @@ import java.util.Map;
 
 public class ScoreStraightCategory implements ScoreStrategy {
 
-    int unwantedNumber;
+    final int unwantedNumber;
 
     public ScoreStraightCategory(int unwantedNumber) {
         this.unwantedNumber = unwantedNumber;

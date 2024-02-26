@@ -4,7 +4,7 @@ import bbreant.kata.yatzy.refactoring.Roll;
 
 public class ScoreNumbersCategory implements ScoreStrategy {
 
-    int categoryNumber;
+    final int categoryNumber;
 
     public ScoreNumbersCategory(int categoryNumber) {
         this.categoryNumber = categoryNumber;
@@ -12,6 +12,6 @@ public class ScoreNumbersCategory implements ScoreStrategy {
 
     @Override
     public int score(Roll roll) {
-        return roll.getDice().stream().filter(dieValue -> dieValue == this.categoryNumber).reduce(0, Integer::sum);
+        return roll.dice().stream().filter(dieValue -> dieValue == this.categoryNumber).reduce(0, Integer::sum);
     }
 }

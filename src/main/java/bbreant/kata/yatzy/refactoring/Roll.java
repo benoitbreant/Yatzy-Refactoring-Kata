@@ -1,27 +1,24 @@
 package bbreant.kata.yatzy.refactoring;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class Roll {
-    final List<Integer> dice;
-
+public record Roll(List<Integer> dice) {
     public Roll(List<Integer> dice) {
-        this.dice = Objects.requireNonNullElse(dice, Collections.emptyList());
+        this.dice = Stream.ofNullable(dice).flatMap(Collection::stream).filter(Objects::nonNull).toList();
     }
 
-    public List<Integer> getDice() {
-        return dice;
+    @Override
+    public List<Integer> dice() {
+        return Collections.unmodifiableList(this.dice);
     }
 
     public int sumOfAllDice() {
-        return this.dice.stream().reduce(0, Integer::sum);
+        return this.dice.stream().filter(Objects::nonNull).reduce(0, Integer::sum);
     }
 
     public Map<Integer, Long> groupDiceByValue() {
-        return dice.stream().collect(Collectors.groupingBy(dieValue -> dieValue, Collectors.counting()));
+        return dice.stream().filter(Objects::nonNull).collect(Collectors.groupingBy(dieValue -> dieValue, Collectors.counting()));
     }
 }

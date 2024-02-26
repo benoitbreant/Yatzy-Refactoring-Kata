@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public class ScoreMultipleOfAKindCategory implements ScoreStrategy {
 
-    int expectedNumberOfAKind;
+    final int expectedNumberOfAKind;
 
     public ScoreMultipleOfAKindCategory(int expectedNumberOfAKind) {
         this.expectedNumberOfAKind = expectedNumberOfAKind;
